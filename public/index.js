@@ -41,7 +41,7 @@ const ITEM_CONFIG = [
     width: 50 / 1.5,
     height: 50 / 1.5,
     id: 1,
-    image: 'images/items/pokeball_red.png',
+    image: 'images/items/pikachu.png',
   },
   {
     width: 50 / 1.5,

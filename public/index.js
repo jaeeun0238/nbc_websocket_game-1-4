@@ -37,10 +37,30 @@ const CACTI_CONFIG = [
 
 // 아이템
 const ITEM_CONFIG = [
-  { width: 50 / 1.5, height: 50 / 1.5, id: 1, image: 'images/items/pokeball_red.png' },
-  { width: 50 / 1.5, height: 50 / 1.5, id: 2, image: 'images/items/pokeball_yellow.png' },
-  { width: 50 / 1.5, height: 50 / 1.5, id: 3, image: 'images/items/pokeball_purple.png' },
-  { width: 50 / 1.5, height: 50 / 1.5, id: 4, image: 'images/items/pokeball_cyan.png' },
+  {
+    width: 50 / 1.5,
+    height: 50 / 1.5,
+    id: 1,
+    image: 'images/items/pokeball_red.png',
+  },
+  {
+    width: 50 / 1.5,
+    height: 50 / 1.5,
+    id: 2,
+    image: 'images/items/pokeball_yellow.png',
+  },
+  {
+    width: 50 / 1.5,
+    height: 50 / 1.5,
+    id: 3,
+    image: 'images/items/pokeball_purple.png',
+  },
+  {
+    width: 50 / 1.5,
+    height: 50 / 1.5,
+    id: 4,
+    image: 'images/items/pokeball_cyan.png',
+  },
 ];
 
 // 게임 요소들
@@ -78,7 +98,13 @@ function createSprites() {
     scaleRatio,
   );
 
-  ground = new Ground(ctx, groundWidthInGame, groundHeightInGame, GROUND_SPEED, scaleRatio);
+  ground = new Ground(
+    ctx,
+    groundWidthInGame,
+    groundHeightInGame,
+    GROUND_SPEED,
+    scaleRatio,
+  );
 
   const cactiImages = CACTI_CONFIG.map((cactus) => {
     const image = new Image();
@@ -90,7 +116,12 @@ function createSprites() {
     };
   });
 
-  cactiController = new CactiController(ctx, cactiImages, scaleRatio, GROUND_SPEED);
+  cactiController = new CactiController(
+    ctx,
+    cactiImages,
+    scaleRatio,
+    GROUND_SPEED,
+  );
 
   const itemImages = ITEM_CONFIG.map((item) => {
     const image = new Image();
@@ -103,14 +134,25 @@ function createSprites() {
     };
   });
 
-  itemController = new ItemController(ctx, itemImages, scaleRatio, GROUND_SPEED);
+  itemController = new ItemController(
+    ctx,
+    itemImages,
+    scaleRatio,
+    GROUND_SPEED,
+  );
 
   score = new Score(ctx, scaleRatio);
 }
 
 function getScaleRatio() {
-  const screenHeight = Math.min(window.innerHeight, document.documentElement.clientHeight);
-  const screenWidth = Math.min(window.innerHeight, document.documentElement.clientWidth);
+  const screenHeight = Math.min(
+    window.innerHeight,
+    document.documentElement.clientHeight,
+  );
+  const screenWidth = Math.min(
+    window.innerHeight,
+    document.documentElement.clientWidth,
+  );
 
   // window is wider than the game width
   if (screenWidth / screenHeight < GAME_WIDTH / GAME_HEIGHT) {
@@ -203,7 +245,7 @@ function gameLoop(currentTime) {
     ground.update(gameSpeed, deltaTime);
     // 선인장
     cactiController.update(gameSpeed, deltaTime);
-    itemController.update(gameSpeed, deltaTime);
+    itemController.update(gameSpeed, deltaTime, score.stage); // 스테이지추가
     // 달리기
     player.update(gameSpeed, deltaTime);
     updateGameSpeed(deltaTime);

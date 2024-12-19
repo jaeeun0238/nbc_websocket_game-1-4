@@ -16,6 +16,11 @@ socket.on('connection', (data) => {
   userId = data.uuid;
 });
 
+let gameAssetsData = null;
+socket.on('gameAssets', (data) => {
+  gameAssetsData = data;
+});
+
 const sendEvent = (handlerId, payload) => {
   socket.emit('event', {
     userId,

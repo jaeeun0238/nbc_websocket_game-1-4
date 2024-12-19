@@ -1,9 +1,11 @@
-import { sendEvent } from './Socket.js';
+import { sendEvent, gameAssetsData } from './Socket.js';
 
 class Score {
   score = 0;
   HIGH_SCORE_KEY = 'highScore';
   stageChange = true;
+  stage = 0;
+  itemID = 0;
 
   constructor(ctx, scaleRatio) {
     this.ctx = ctx;
@@ -12,8 +14,10 @@ class Score {
   }
 
   update(deltaTime) {
-    this.score += deltaTime * 0.001; // deltaTime 프레임//0.001 = 1초 (1000/60 = 16.77)
-    console.log('delta', deltaTime);
+    this.stageChange = true;
+    const stageData = gameAssetsData.stages.data;
+    this.score += deltaTime * 0.001 * stageData[this.stage].scorePerSecond; // deltaTime 프레임//0.001 = 1초 (1000/60 = 16.77)
+    // console.log('delta', deltaTime);
 
     // 0
     // 0 += 16.77 * 0.001 = 0.01677
@@ -25,41 +29,34 @@ class Score {
     // 100.015 += 0.016 this.stageChange = true
     // 100.031 += 0.016
 
-    if (Math.floor(this.score) === 100 && this.stageChange) {
+    if (
+      Math.floor(this.score) >= stageData[this.stage + 1].score &&
+      this.stageChange
+    ) {
       this.stageChange = false;
       // this.stageChange = false
-      sendEvent(11, { currentStage: 1000, targetStage: 1001 });
-    }
-
-    if (Math.floor(this.score) === 200 && this.stageChange) {
-      this.stageChange = false;
-      // this.stageChange = false
-      sendEvent(11, { currentStage: 1001, targetStage: 1002 });
-    }
-    if (Math.floor(this.score) === 300 && this.stageChange) {
-      this.stageChange = false;
-      // this.stageChange = false
-      sendEvent(11, { currentStage: 1002, targetStage: 1003 });
-    }
-    if (Math.floor(this.score) === 400 && this.stageChange) {
-      this.stageChange = false;
-      // this.stageChange = false
-      sendEvent(11, { currentStage: 1003, targetStage: 1004 });
-    }
-    if (Math.floor(this.score) === 500 && this.stageChange) {
-      this.stageChange = false;
-      // this.stageChange = false
-      sendEvent(11, { currentStage: 1004, targetStage: 1005 });
+      sendEvent(11, {
+        currentStage: stageData[this.stage].id,
+        targetStage: stageData[this.stage + 1].id,
+      });
+      this.stage++; // this.stage += 1;
     }
   }
 
   getItem(itemId) {
     // 아이템 획득시 점수 변화
-    this.score += 10;
+    const itemData = gameAssetsData.items.data.find(
+      (item) => item.id === itemId,
+    );
+    // if (itemId === itemData.id) {
+    //   this.score += itemData.score;
+    // }
+    this.score += itemData.score;
   }
 
   reset() {
     this.score = 0;
+    this.stage = 0;
   }
 
   setHighScore() {
@@ -80,6 +77,9 @@ class Score {
     const fontSize = 20 * this.scaleRatio;
     this.ctx.font = `${fontSize}px serif`;
     this.ctx.fillStyle = '#525250';
+
+    const stageX = 25 * this.scaleRatio;
+    this.ctx.fillText(`STAGE ${this.stage + 1}`, stageX, y);
 
     const scoreX = this.canvas.width - 75 * this.scaleRatio;
     const highScoreX = scoreX - 125 * this.scaleRatio;

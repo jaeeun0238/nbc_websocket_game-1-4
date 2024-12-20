@@ -17,7 +17,7 @@ class Score {
     this.stageChange = true;
     const stageData = gameAssetsData.stages.data;
     this.score += deltaTime * 0.001 * stageData[this.stage].scorePerSecond; // deltaTime 프레임//0.001 = 1초 (1000/60 = 16.77)
-    console.log('delta', deltaTime);
+    // console.log('delta', deltaTime);
 
     // 0
     // 0 += 16.77 * 0.001 = 0.01677
